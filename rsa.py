@@ -27,10 +27,13 @@ def extended_gcd(a, b):
         old_r, r = r, (old_r - quotient*r)
         old_s, s = s, (old_s - quotient*s)
         old_t, t = t, (old_t - quotient*t)
-    return s+old_s       
+    res = s+old_s       
+    return res
 
 def enciphering_exponent(n, rsa_modulus):
     while True:
+        '''e = 47
+        return e'''
         e = random.randint(2, rsa_modulus-1)
         if gcd(e, rsa_modulus) == 1:
             return e
@@ -68,16 +71,22 @@ def main():
     
     n = prime1*prime2
     rsa_modulus = (prime1-1)*(prime2-1)
-    e = enciphering_exponent(n, rsa_modulus)
-    d = extended_gcd(e, rsa_modulus)
+    while True:
+        e = enciphering_exponent(n, rsa_modulus)
+        d = extended_gcd(e, rsa_modulus)
+        if d > 0:
+            break
     print("RSA modulus:", rsa_modulus)
     print("Public key values:\n\tn =", n, "\te =", e)
     print("Private key values:\n\tn =", n, "\td =", d)
     message = input("Insert the message in 'message' to encrypt : ")
     message_encrypt = encrypter(message, e, n)
     print("Encrypted message: ", end="")
+    #print(message_encrypt)
     for val in message_encrypt:
-        print(val, end="")
+        print(chr(val%128), end="")
+    '''for val in message_encrypt:
+        print(val, end="")'''
     print()
     message = decrypter(message_encrypt, d, n)
     print("Decrypted message:", message)
